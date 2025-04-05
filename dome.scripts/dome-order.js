@@ -224,7 +224,9 @@ orderPayment.addEventListener("click", () => {
 
   if (paidAmount > currentBalance) {
     useModalState(":(", "You do not have funds for this transaction.");
+    setTimeout(() => {
     window.location.href = "./dashboard.html";
+  }, 2000);
     return;
   }
 

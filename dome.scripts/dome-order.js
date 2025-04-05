@@ -1,85 +1,57 @@
-const useOrderRef = () => {
+// Generate a unique transaction reference
+const generateOrderRef = () => {
   const prefix = "#663";
   const genRanHex = (size) =>
     [...Array(size)]
       .map(() => Math.floor(Math.random() * 16).toString(16))
       .join("");
 
-  let hexID = prefix + genRanHex(21);
-  return hexID;
+  return prefix + genRanHex(21);
 };
 
-const useOrderDate = () => {
-  state = new Date();
+// Format current date and time
+const formatOrderDate = () => {
+  const now = new Date();
 
-  let dt = state.toDateString();
-  let date = dt;
+  const dateStr = now.toDateString();
+  const hrs = now.getHours().toString().padStart(2, "0");
+  const mins = now.getMinutes().toString().padStart(2, "0");
+  const secs = now.getSeconds().toString().padStart(2, "0");
+  const timeStr = `${hrs}:${mins}:${secs}`;
 
-  var hours = state.getHours();
-  var minutes = state.getMinutes();
-  var seconds = state.getSeconds();
-
-  let hrs =
-    hours.toString().length < 2 ? hours.toString().padStart(2, "0") : hours;
-  let mins =
-    minutes.toString().length < 2
-      ? minutes.toString().padStart(2, "0")
-      : minutes;
-  let secs =
-    seconds.toString().length < 2
-      ? seconds.toString().padStart(2, "0")
-      : seconds;
-
-  let tm = hrs + ":" + mins + ":" + secs;
-  var fyr = state.getFullYear();
-
-  var dateTime = dt + " at " + tm;
-  var dateTimeYear = date.substr(0, date.length - 4) + " " + tm + " " + fyr;
-
-  return dateTime;
-
-  /* document.getElementById('date').innerHTML = dateTime; // Receipt Date Format
-    localStorage.setItem("currentSessionDate", dateTime);
-    localStorage.setItem("currentDate", dateTimeYear); // TX Date Format */
+  return `${dateStr} at ${timeStr}`;
 };
 
-// Initialize the iOS modal units
+// iOS modal elements
 const cupertinoModal = document.getElementById("cupertinoModalMain");
 const cupertinoDialog = document.getElementById("cupertinoDialog");
 const cupertinoTitle = document.getElementById("cupertinoTitle");
 const cupertinoContent = document.getElementById("cupertinoContent");
 const cupertinoAlertBtn = document.getElementById("cupertinoModalBtn");
 
-// Initialize the Android modal units
+// Android modal elements
 const materialModal = document.getElementById("materialModalMain");
 const materialDialog = document.getElementById("materialDialog");
 const materialTitle = document.getElementById("materialTitle");
 const materialContent = document.getElementById("materialContent");
 const materialAlertBtn = document.getElementById("materialModalBtn");
 
-/* HEADER - Modal Code */
 function openiOSDialog() {
-  const cupertinoModal = document.getElementById("cupertinoModalMain");
-  const cupertinoDialog = document.getElementById("cupertinoDialog");
-
   cupertinoModal.classList.add("animate-fadeInBackground");
   cupertinoDialog.classList.add("animate-fadeIn");
   cupertinoModal.classList.remove("hidden");
 
-  setTimeout(function () {
+  setTimeout(() => {
     cupertinoModal.classList.remove("animate-fadeInBackground");
     cupertinoDialog.classList.remove("animate-fadeIn");
   }, 1000);
 }
 
 function closeiOSDialog() {
-  const cupertinoModal = document.getElementById("cupertinoModalMain");
-  const cupertinoDialog = document.getElementById("cupertinoDialog");
-
   cupertinoModal.classList.add("animate-fadeOutBackground");
   cupertinoDialog.classList.add("animate-fadeOut");
 
-  setTimeout(function () {
+  setTimeout(() => {
     cupertinoModal.classList.remove("animate-fadeOutBackground");
     cupertinoDialog.classList.remove("animate-fadeOut");
     cupertinoModal.classList.add("hidden");
@@ -87,37 +59,25 @@ function closeiOSDialog() {
 }
 
 function openAndroidDialog() {
-  const materialModal = document.getElementById("materialModalMain");
-  const materialDialog = document.getElementById("materialDialog");
-
   materialModal.classList.remove("hidden");
 }
 
 function closeAndroidDialog() {
-  const materialModal = document.getElementById("materialModalMain");
-  const materialDialog = document.getElementById("materialDialog");
-
   materialModal.classList.add("animate-fadeOutBackground");
   materialDialog.classList.add("animate-fadeOut");
 
-  setTimeout(function () {
+  setTimeout(() => {
     materialModal.classList.remove("animate-fadeOutBackground");
     materialDialog.classList.remove("animate-fadeOut");
     materialModal.classList.add("hidden");
   }, 100);
 }
 
-cupertinoAlertBtn.addEventListener("click", () => {
-  closeiOSDialog();
-});
-
-materialAlertBtn.addEventListener("click", () => {
-  closeAndroidDialog();
-});
+cupertinoAlertBtn.addEventListener("click", closeiOSDialog);
+materialAlertBtn.addEventListener("click", closeAndroidDialog);
 
 function useModalState(title, content) {
-  // Initialize necessary variables
-  let devicePlatform = localStorage.getItem("appPlatform");
+  const devicePlatform = localStorage.getItem("appPlatform");
 
   if (devicePlatform === "iOS") {
     cupertinoTitle.innerHTML = title;
@@ -131,8 +91,8 @@ function useModalState(title, content) {
     console.log("No modal to show!");
   }
 }
-/* FOOTER - Modal Code */
 
+// Elements
 const exitOrder = document.getElementById("cancelOrderProcess");
 const scanQRButton = document.getElementById("order_scan");
 const tapQRButton = document.getElementById("order_rescan");
@@ -146,22 +106,18 @@ const orderInput = document.getElementById("orderAmtInput");
 const orderOTP = document.getElementById("order_otp");
 const orderLastOTP = document.getElementById("last_otp");
 
-// Function to restrict input to 4 digits
+// Input enforcement
 function enforceFourDigitLimit(event) {
   const input = event.target;
-  input.value = input.value.replace(/\D/g, ""); // Remove non-digit characters
+  input.value = input.value.replace(/\D/g, ""); // Remove non-digits
   if (input.value.length > 4) {
-    input.value = input.value.slice(0, 4); // Limit to 4 characters
+    input.value = input.value.slice(0, 4);
   }
 }
 
-function createTransaction(txRefID, txDateAtYear, txVenue, txAmount) {
-  return {
-    refID: txRefID,
-    dateAtYear: txDateAtYear,
-    venue: txVenue,
-    amount: txAmount,
-  };
+// Transaction handlers
+function createTransaction(refID, dateAtYear, venue, amount) {
+  return { refID, dateAtYear, venue, amount };
 }
 
 function addTransaction(usrTransaction) {
@@ -173,6 +129,7 @@ function addTransaction(usrTransaction) {
   localStorage.setItem("transactionBase", JSON.stringify(useTXBase));
 }
 
+// Events
 orderInput.addEventListener("input", enforceFourDigitLimit);
 
 exitOrder.addEventListener("click", () => {
@@ -184,21 +141,22 @@ exitOrder.addEventListener("click", () => {
 });
 
 scanQRButton.addEventListener("click", () => {
-  usrAmount = orderInput.value;
+  const usrAmount = parseInt(orderInput.value, 10);
+
+  if (isNaN(usrAmount)) {
+    useModalState("Invalid Entry", "Please enter a valid amount.");
+    return;
+  }
 
   if (usrAmount > 80000) {
     orderInput.value = "";
     useModalState("Attention", "You can only spend 80000 per transaction!");
-    console.error("Cannot be more than 80000");
   } else if (usrAmount < 10) {
     orderInput.value = "";
     useModalState("Attention", "Enter an amount greater than 10");
-    console.error("Cannot be less than 10");
   } else {
-    localStorage.setItem("usrOrderAmt", usrAmount);
+    localStorage.setItem("usrOrderAmt", usrAmount.toString());
     window.location.hash = "#qrscan";
-
-    console.log(localStorage.getItem("usrOrderAmt"));
   }
 });
 
@@ -234,49 +192,59 @@ orderPayment.addEventListener("click", () => {
   if (pinInputs.length !== 4) {
     console.error("Expected exactly 4 pin input fields");
     return;
-  } else {
-    for (const input of pinInputs) {
-      pinDigits.push(input.value);
-    }
-
-    const completePin = pinDigits.join("");
-    console.log(completePin);
-    localStorage.setItem("liveUserOTP", completePin);
-
-    const authUserPin = localStorage.getItem("baseUserOTP");
-
-    if (completePin !== authUserPin) {
-      useModalState("Attention", "Wrong Pin");
-      console.error("The PIN you entered is incorrect!");
-      orderLastOTP.focus();
-    } else {
-      const orderRef = useOrderRef();
-      const orderDate = useOrderDate();
-      localStorage.setItem("usrOrderRef", orderRef);
-      localStorage.setItem("usrOrderDT", orderDate);
-
-      const paidAmount = localStorage.getItem("usrOrderAmt");
-      const balAtPayment =
-        parseInt(localStorage.getItem("myChowBal"), 10) -
-        parseInt(paidAmount, 10);
-      localStorage.setItem("myChowBal", balAtPayment.toString());
-
-      addTransaction(
-        createTransaction(
-          orderRef,
-          orderDate,
-          localStorage.getItem("usrCafeOption"),
-          paidAmount
-        )
-      );
-      let useTransBase = localStorage.getItem("transactionBase");
-
-      window.location.href = "./verify.html";
-    }
   }
+
+  for (const input of pinInputs) {
+    const val = input.value.trim();
+    if (!val) {
+      useModalState("Missing Input", "Please fill in all 4 PIN digits.");
+      return;
+    }
+    pinDigits.push(val);
+  }
+
+  const completePin = pinDigits.join("");
+  localStorage.setItem("liveUserOTP", completePin);
+
+  const authUserPin = localStorage.getItem("baseUserOTP");
+
+  if (completePin !== authUserPin) {
+    useModalState("Attention", "Wrong Pin");
+    orderLastOTP.focus();
+    return;
+  }
+
+  const paidAmount = parseInt(localStorage.getItem("usrOrderAmt"), 10);
+  const currentBalance = parseInt(localStorage.getItem("myChowBal"), 10);
+
+  if (isNaN(paidAmount) || isNaN(currentBalance)) {
+    useModalState("System Error", "Could not verify your balance.");
+    return;
+  }
+
+  if (paidAmount > currentBalance) {
+    useModalState("Insufficient Funds", "You do not have enough balance for this transaction.");
+    return;
+  }
+
+  const newBalance = currentBalance - paidAmount;
+  localStorage.setItem("myChowBal", newBalance.toString());
+
+  const orderRef = generateOrderRef();
+  const orderDate = formatOrderDate();
+  localStorage.setItem("usrOrderRef", orderRef);
+  localStorage.setItem("usrOrderDT", orderDate);
+
+  addTransaction(
+    createTransaction(
+      orderRef,
+      orderDate,
+      localStorage.getItem("usrCafeOption"),
+      paidAmount.toString()
+    )
+  );
+
+  window.location.href = "./verify.html";
 });
 
 window.addEventListener("load", () => orderInput.focus());
-/* TEST [passed]:
-    console.log(usrAmount);
-    console.log(localStorage.getItem("usrOrderAmt")); */

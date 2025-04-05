@@ -223,7 +223,8 @@ orderPayment.addEventListener("click", () => {
   }
 
   if (paidAmount > currentBalance) {
-    useModalState("Insufficient Funds", "You do not have enough balance for this transaction.");
+    useModalState(":(", "You do not have funds for this transaction.");
+    window.location.href = "./dashboard.html";
     return;
   }
 

@@ -18,5 +18,25 @@
       "emailAddr": "calebmide@gmail.com",
       "nxtFunding": ""
     }
+  },
+  "victor": {
+    "authInfo": {
+      "uuid": "",
+      "priority": "chow-usr-01",
+      "username": "victor",
+      "secureKey": "YXV0aD0weCx2aWN0b3Isc29mdGJveQ=="
+    },
+    "accVariables": {
+      "chowBalance": 0,
+      "pin": 1234
+    },
+    "accInfo": {
+      "firstName": "Victor",
+      "middleName": "Bamidele",
+      "lastName": "Adewale",
+      "matricNo": "LCU/UG/22/19223",
+      "emailAddr": "theboybami@gmail.com",
+      "nxtFunding": ""
+    }
   }
 }
